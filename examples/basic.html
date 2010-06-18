@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Example</title>
+  <script type="text/javascript" src="../connective.js"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
+  
+  <script type="text/javascript" charset="utf-8">
+    function afterwards(json) {
+      $('#server_value').text(json.value);
+    }
+    
+    function afterwards_2(json) {
+      $('#my_value').val(json.value);
+    }
+    
+    Connective.connectTo('http://localhost:3000/', afterwards);
+    Connective.connectTo('http://localhost:3000/', afterwards_2);
+  </script>
+</head>
+  <body>
+    
+      Server value: <span id='server_value'></span><br/>
+      <input id='my_value'/>
+    
+  </body>
+</html>
