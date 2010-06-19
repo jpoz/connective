@@ -9,16 +9,18 @@
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
   
   <script type="text/javascript" charset="utf-8">
+  
     function afterwards(json) {
       $('#server_value').text(json.value);
     }
     
-    function afterwards_2(json) {
-      $('#my_value').val(json.value);
-    }
-    
-    Connective.connectTo('http://localhost:3000/', afterwards);
-    Connective.connectTo('http://localhost:3000/', afterwards_2);
+    Connective.connectTo('http://localhost:3000/?james=cool', afterwards);
+    $(function() {
+      $('#my_value').change(function() {
+        Connective.get('http://localhost:3000/?update='+$(this).val(), function() {});
+      });
+    });
+
   </script>
 </head>
   <body>
