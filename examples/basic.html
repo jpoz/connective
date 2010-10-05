@@ -11,13 +11,16 @@
   <script type="text/javascript" charset="utf-8">
   
     function afterwards(json) {
+      this.params.revision = json.revision;
       $('#server_value').text(json.value);
     }
     
-    Connective.connectTo('http://localhost:3000/?james=cool', afterwards);
+    
     $(function() {
+      Connective.connectTo('http://localhost:3000/', {revision: 0}, afterwards);
+      
       $('#my_value').change(function() {
-        Connective.get('http://localhost:3000/?update='+$(this).val(), function() {});
+        Connective.get('http://localhost:3000/', {update:$(this).val()}, function() {});
       });
     });
 

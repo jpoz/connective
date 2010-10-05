@@ -12,14 +12,15 @@ http.createServer(function (req, res) {
   if (query) {
     sys.puts(sys.inspect(query));
     if(query.update) {
-      value = query.update
+      value = query.update;
+      ++revision;
       res.writeHead(200, {'Content-Type':'text/javascript'});
       res.end(query.jsonp+"();");
     } else if(query.jsonp) {
-      new CometConnection(res, query.jsonp, function() {
-        return value;
+      new CometConnection(res, query, function() {
+        return this.query.revision != revision;
       },function() {
-        return {value: value};
+        return {value: value, revision: revision};
       });
     } else {
       res.writeHead(200); res.end();
@@ -30,8 +31,9 @@ http.createServer(function (req, res) {
 }).listen(parseInt(port));
 
 
-function CometConnection(res, jsonp, check, return_value) {
-  this.jsonp = jsonp;
+function CometConnection(res, query, check, return_value) {
+  this.jsonp = query.jsonp;
+  this.query = query
   this.res = res;
   this.check = check;
   this.return_value = return_value;
@@ -39,6 +41,10 @@ function CometConnection(res, jsonp, check, return_value) {
   this.start_check(150);
   this.start_fail_safe(30000);
   return this;
+}
+
+CometConnection.prototype.respond = function(obj) {
+  this.respond_with(this.return_value.call(this));
 }
 
 CometConnection.prototype.respond_with = function(obj) {
@@ -51,17 +57,16 @@ CometConnection.prototype.respond_with = function(obj) {
 
 CometConnection.prototype.start_check = function(interval) {
   var self = this;
-  this.check_interval = setInterval(function() { self.preform_check(); }, interval);
+  this.check_interval = setInterval(function() { self.preform_check.call(self); }, interval);
 }
 
 CometConnection.prototype.preform_check = function() {
-  var current_value = this.check();
-  if (this.previous_value != current_value) {
-    this.respond_with(this.return_value());
+  if (this.check()) {
+    this.respond()
   }
 }
 
 CometConnection.prototype.start_fail_safe = function(timeout) {
   var self = this;
-  this.fail_safe = setTimeout(function() { self.respond_with(self.return_value()); }, timeout);
+  this.fail_safe = setTimeout(function() { self.respond(); }, timeout);
 }
