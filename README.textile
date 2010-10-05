@@ -1,0 +1,31 @@
+h1. Connective
+
+Investigation into multiple fault tolerant long polling cross domain connections.
+
+h2. Usage
+
+h3. Connective.connectTo(url, params, callback);
+
+Creates a long polling jsonp connection to the url sending the params
+
+<pre>
+  <code>
+    Connective.connectTo('http://localhost:3000/', {revision: 0}, function(json) {
+      this.params.revision = json.revision; // update revision for next poll
+      $('body').append(json.value);
+    });
+  </code>
+</pre>
+
+h3. Connective.get(url, params, callback);
+
+Creates a jsonp connection to the url
+
+<pre>
+  <code>
+    Connective.get('http://localhost:3000/user.json', {name: "Jimmy"}, function(json) {
+      $('body').append(json.value);
+    });
+  </code>
+</pre>
+

@@ -1,10 +1,12 @@
+#!/usr/bin/env node
+
 var http = require('http'),
     port = process.env.PORT || 3000
     url_parse = require('url').parse
     sys = require('sys');
     
-var value    = "Awesome";
-var revision = 0 
+var value    = "Type into the box below! Open multiple window";
+var revision = -1 
 
 
 http.createServer(function (req, res) {
@@ -39,7 +41,7 @@ function CometConnection(res, query, check, return_value) {
   this.return_value = return_value;
   this.previous_value = this.check();
   this.start_check(150);
-  this.start_fail_safe(30000);
+  this.start_fail_safe(30000); // if deploying on heroku this is needed
   return this;
 }
 
