@@ -86,7 +86,6 @@ ConnectiveConnection.prototype.connect = function() {
   var current_base_url = (typeof(this.url) == 'function') ? this.url() : this.url;
   var current_url      = Connective._build_url_from(current_base_url, this.params)
   var connective_url   = Connective._build_url_from(current_url, {
-    timestamp: Connective._timestamp(),
     jsonp : ("Connective.receive_"+this.uuid)
   });
   this.script = document.createElement('script');
