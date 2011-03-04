@@ -24,6 +24,10 @@ app.get('/echo_params.js', function(req, res) {
   res.send(req.query.jsonp + "("+JSON.stringify(req.query)+");");  
 });
 
+app.get('/failing_callback.js', function(req, res) {
+  res.send("fail_boat();");
+});
+
 // BOOOM
 app.listen(4000);
 util.log('Running Test Server');

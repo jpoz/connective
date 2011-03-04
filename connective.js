@@ -75,21 +75,30 @@ window.ConnectiveConnection = function(uuid, url, params, callback) {
 
 ConnectiveConnection.prototype.receive = function(json) {
   this.callback(json);
-};
-
-ConnectiveConnection.prototype.kill = function() {
-  document.getElementsByTagName('head')[0].removeChild(this.script);
-};
-
-ConnectiveConnection.prototype.ping = function() {
-  document.getElementsByTagName('head')[0].removeChild(this.script);
   this.connect();
 };
 
+ConnectiveConnection.prototype.kill = function(force) {
+  if (this.script) {
+    document.getElementsByTagName('head')[0].removeChild(this.script);
+    this.script = null;
+  }
+  if (force) {
+    this.block_reload = true;
+  }
+};
+
+ConnectiveConnection.prototype.ping = function() {
+  this.kill();
+};
+
 ConnectiveConnection.prototype.connect = function() {
-  var current_base_url = (typeof(this.url) == 'function') ? this.url() : this.url;
-  var current_url      = Connective._build_url_from(current_base_url, this.params);
-  var connective_url   = Connective._build_url_from(current_url, {
+  if (this.block_reload) return;
+  this.kill();
+  this.params.timestamp = new Date().getTime();
+  var current_base_url  = (typeof(this.url) == 'function') ? this.url() : this.url;
+  var current_url       = Connective._build_url_from(current_base_url, this.params);
+  var connective_url    = Connective._build_url_from(current_url, {
     jsonp : ("Connective.receive_"+this.uuid)
   });
   this.script = document.createElement('script');
@@ -106,8 +115,13 @@ window.ConnectiveGet = function(uuid, url, params, callback) {
   this.connect();
   return this;
 };
-ConnectiveGet.prototype.receive = ConnectiveConnection.prototype.receive;
+
+ConnectiveGet.prototype.receive = function(json) {
+  this.callback(json);
+};
+
 ConnectiveGet.prototype.connect = ConnectiveConnection.prototype.connect;
+ConnectiveGet.prototype.kill = ConnectiveConnection.prototype.kill;
 ConnectiveGet.prototype.ping = function() {
-  document.getElementsByTagName('head')[0].removeChild(this.script);
+  this.kill();
 };
