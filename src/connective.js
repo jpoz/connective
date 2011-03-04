@@ -25,11 +25,11 @@
 window.Connective = {
   get:function(url, params, callback) {
     var uuid = window.Connective._setup_uuid_callback();
-    window.Connective._callback_store[uuid] = new ConnectiveGet(uuid, url, params, callback);
+    return window.Connective._callback_store[uuid] = new ConnectiveGet(uuid, url, params, callback);
   },
   connectTo: function(url, params, callback) {
     var uuid = window.Connective._setup_uuid_callback();
-    window.Connective._callback_store[uuid] = new ConnectiveConnection(uuid, url, params, callback);
+    return window.Connective._callback_store[uuid] = new ConnectiveConnection(uuid, url, params, callback);
   },
   
   // Private methods
@@ -75,6 +75,10 @@ window.ConnectiveConnection = function(uuid, url, params, callback) {
 
 ConnectiveConnection.prototype.receive = function(json) {
   this.callback(json);
+};
+
+ConnectiveConnection.prototype.kill = function() {
+  document.getElementsByTagName('head')[0].removeChild(this.script);
 };
 
 ConnectiveConnection.prototype.ping = function() {
