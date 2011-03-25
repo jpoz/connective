@@ -4,7 +4,7 @@ var express = require('express');
 var app = express.createServer();
 app.configure(function(){
     app.use(express.logger());
-    app.use(express.bodyDecoder());
+    // app.use(express.bodyDecoder());
     
     app.use(app.router);
     
